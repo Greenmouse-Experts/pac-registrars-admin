@@ -56,6 +56,7 @@ const Homepage = () => {
             sx={{
               bgcolor: "background.paper",
               margin: "20px",
+              paddingTop: "20px",
               borderRadius: "20px",
               minHeight: '500px'
             }}
