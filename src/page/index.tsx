@@ -55,7 +55,6 @@ const Homepage = () => {
           <Box
             sx={{
               bgcolor: "background.paper",
-              padding: "30px",
               margin: "20px",
               borderRadius: "20px",
               minHeight: '500px'
