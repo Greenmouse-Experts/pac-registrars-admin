@@ -92,3 +92,26 @@
 ::-webkit-scrollbar-thumb:hover {
   background:rgba(245, 75, 100, 1)
 }
+.download_style{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 20px;
+  margin: 10px 0px;
+}
+.csv_download{
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #f3f1f1;
+  padding: 7px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.pdf_download{
+  background-image: url('../src/assets/pdf-button.png');
+  background-size: 100% 100%;
+  width: 150px;
+  height: 40px;
+}

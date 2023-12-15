@@ -12,9 +12,16 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
+import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import { CSVLink } from "react-csv";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import logo from '../assets/9159105.png'
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -106,28 +113,64 @@ const WaitlistTable = () => {
   }
   const [tableData, setTableData] = useState<Props[]>([]);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setLoading(true);
+  const fetchWaitList = () => {
     fetch("https://api.gleemora.com/api/waitlist")
       .then((data) => data.json())
       .then((data) => {
         setTableData(data.data);
         setLoading(false);
-      });
+      })
+      .catch(error => console.error(error));
+  }
+  useEffect(() => {
+    setLoading(true);
+    fetchWaitList()
   }, []);
-
+  // delete waitlister
+  const deleteLister = (id:number) => {
+    fetch(`https://api.gleemora.com/api/waitlist?waitlist_id=${id}`, {
+      method: 'DELETE',
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        toast.success(data.message)
+        fetchWaitList()
+      })
+      .catch(error => console.error(error));
+  }
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const data = tableData.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  // pdf download
+  const downloadAsPDF = () => {
+    const doc = new jsPDF();
+    (doc as any).autoTable({
+      head: [
+        [
+          "S/N",
+          "Full Name",
+          "Email",
+          "Suggestions",
+          "Date Joined",
+        ],
+      ],
+      body: tableData?.map((item, index) => [
+          index + 1,
+          item.name,
+          item.email,
+          item.suggestions,
+          dayjs(item.created_at).format("DD-MMM -YYYY"),
+        ]),
+    });
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-//   const emptyRows =
-//     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tableData.length) : 0;
+    doc.save("waitlist.pdf");
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    event?.preventDefault()
+    event?.preventDefault();
     setPage(newPage);
   };
 
@@ -139,6 +182,16 @@ const WaitlistTable = () => {
   };
   return (
     <>
+    <ToastContainer />
+      <div>
+        {!!tableData.length && (
+          <div className="download_style">
+            <CSVLink data={data}><div className="csv_download">
+              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            <button onClick={downloadAsPDF} className="pdf_download"></button>
+          </div>
+        )}
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -147,6 +200,7 @@ const WaitlistTable = () => {
               <TableCell>Email</TableCell>
               <TableCell>Suggestions</TableCell>
               <TableCell>Date Joined</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -170,6 +224,7 @@ const WaitlistTable = () => {
                   <TableCell>
                     {dayjs(row.created_at).format("dd DD, MMMM, YYYY")}
                   </TableCell>
+                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
                 </TableRow>
               ))}
           </TableBody>

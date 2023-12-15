@@ -57,6 +57,7 @@ const Homepage = () => {
               bgcolor: "background.paper",
               margin: "20px",
               paddingTop: "20px",
+              paddingX: "9px",
               borderRadius: "20px",
               minHeight: '500px'
             }}

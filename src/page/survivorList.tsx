@@ -15,6 +15,13 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
+import { ToastContainer, toast } from "react-toastify";
+import { CSVLink } from "react-csv";
+import "react-toastify/dist/ReactToastify.css";
+import logo from "../assets/9159105.png";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 interface TablePaginationActionsProps {
   count: number;
@@ -114,27 +121,83 @@ const SurvivorList = () => {
   }
   const [tableData, setTableData] = useState<Props[]>([]);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setLoading(true);
+  const fetchProvider = () => {
     fetch("https://api.gleemora.com/api/survivor")
       .then((data) => data.json())
       .then((data) => {
         setTableData(data.data);
         setLoading(false);
       });
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchProvider();
   }, []);
+  // delete waitlister
+  const deleteProvider = (id: number) => {
+    fetch(`https://api.gleemora.com/api/survivor?survivor_id=${id}`, {
+      method: "DELETE",
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        toast.success(data.message);
+        fetchProvider();
+      })
+      .catch((error) => console.error(error));
+  };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-//   const emptyRows =
-//     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tableData.length) : 0;
+  const data = tableData.map((row) => ({
+    ...row,
+    created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
+  }));
+  // pdf download
+  const downloadAsPDF = () => {
+    const doc = new jsPDF('l', 'pt', [1312, 892]);;
+    (doc as any).autoTable({
+      head: [
+        [
+          "S/N",
+          "Full Name",
+          "Email",
+          "Phone Number",
+          "Location",
+          "Profession",
+          "Age",
+          "Reason",
+          "Story",
+          "Advocacy",
+          "Referral",
+          "Socials",
+          "Date Joined",
+        ],
+      ],
+      body: tableData?.map((item, index) => [
+        index + 1,
+        item.name,
+        item.email,
+        item.phone_number,
+        item.location,
+        item.profession,
+        item.age,
+        item.gleemora_community,
+        item.story_of_resilience,
+        item.referral_code,
+        item.social_media_profiles,
+        dayjs(item.created_at).format("DD-MMM -YYYY"),
+      ]),
+    });
+    doc.setFontSize(9)
+    // doc.setPage([1595.28, 841.89])
+    doc.save("survivor.pdf");
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    event?.preventDefault()
+    event?.preventDefault();
     setPage(newPage);
   };
 
@@ -146,6 +209,20 @@ const SurvivorList = () => {
   };
   return (
     <>
+      <ToastContainer />
+      <div>
+        {!!tableData.length && (
+          <div className="download_style">
+            <CSVLink data={data}>
+              <div className="csv_download">
+                <img src={logo} alt="csv" width={26} height={26} />{" "}
+                <span>Csv Download</span>
+              </div>
+            </CSVLink>
+            <button onClick={downloadAsPDF} className="pdf_download"></button>
+          </div>
+        )}
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -166,6 +243,7 @@ const SurvivorList = () => {
               <TableCell>Refferal</TableCell>
               <TableCell>Socials</TableCell>
               <TableCell>Joined at</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -206,6 +284,14 @@ const SurvivorList = () => {
                   <TableCell>{row.social_media_profiles}</TableCell>
                   <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {dayjs(row.created_at).format("dddd DD, MMMM, YYYY")}
+                  </TableCell>
+                  <TableCell>
+                    <p
+                      style={{ cursor: "pointer" }}
+                      onClick={() => deleteProvider(row.id)}
+                    >
+                      <AutoDeleteIcon />
+                    </p>
                   </TableCell>
                 </TableRow>
               ))}
