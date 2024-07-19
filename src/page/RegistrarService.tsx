@@ -14,20 +14,20 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
+import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 // import { CSVLink } from "react-csv";
 // import jsPDF from "jspdf";
 import "jspdf-autotable";
-// import logo from "../assets/9159105.png";
+// import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
-import { BASEURL } from "../config/url";
 import { getToken } from "../helpers/getToken";
+import { BASEURL } from "../config/url";
+import axios from "axios";
 
 interface TablePaginationActionsProps {
   count: number;
@@ -108,7 +108,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     </Box>
   );
 }
-const WaitlistTable = () => {
+const RegistrarService = () => {
   interface Props {
     created_at: string;
     email: string;
@@ -127,21 +127,16 @@ const WaitlistTable = () => {
   //     })
   //     .catch(error => console.error(error));
   // }
-  const {
-    data: _data,
-  
-    loading,
-    refetch,
-  } = useFetch("/admin/company/secretarial/service");
+  const { data:_data, loading, refetch } = useFetch('/admin/registrar/service');
 
-  console.log(_data);
+  console.log(_data)
   useEffect(() => {
-    setTableData(_data?.data);
+    setTableData(_data?.data)
   }, [_data]);
   // delete waitlister
   const deleteLister = (id: number) => {
     axios
-      .delete(`${BASEURL}/admin/delete/company/secretarial/service`, {
+      .delete(`${BASEURL}/admin/delete/registrar/service`, {
         data: { id },
         headers: {
           Authorization: getToken(),
@@ -158,26 +153,31 @@ const WaitlistTable = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  // const data = tableData?.map((row) => ({
-  //   ...row,
-  //   created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
-  // }));
-  // // pdf download
-  // const downloadAsPDF = () => {
-  //   const doc = new jsPDF();
-  //   (doc as any).autoTable({
-  //     head: [["S/N", "Full Name", "Email", "Suggestions", "Date Joined"]],
-  //     body: tableData?.map((item, index) => [
-  //       index + 1,
-  //       item.name,
-  //       item.email,
-  //       item.suggestions,
-  //       dayjs(item.created_at).format("DD-MMM -YYYY"),
-  //     ]),
-  //   });
+//   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  // pdf download
+//   const downloadAsPDF = () => {
+//     const doc = new jsPDF();
+//     (doc as any).autoTable({
+//       head: [
+//         [
+//           "S/N",
+//           "Full Name",
+//           "Email",
+//           "Suggestions",
+//           "Date Joined",
+//         ],
+//       ],
+//       body: tableData?.map((item, index) => [
+//           index + 1,
+//           item.name,
+//           item.email,
+//           item.suggestions,
+//           dayjs(item.created_at).format("DD-MMM -YYYY"),
+//         ]),
+//     });
 
-  //   doc.save("waitlist.pdf");
-  // };
+//     doc.save("waitlist.pdf");
+//   };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -195,7 +195,7 @@ const WaitlistTable = () => {
   };
   return (
     <>
-      <ToastContainer />
+    <ToastContainer />
       {/* <div>
         {!!tableData?.length && (
           <div className="download_style">
@@ -213,9 +213,9 @@ const WaitlistTable = () => {
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
               <TableCell>Whatsapp Number</TableCell>
-              <TableCell>Firm Name</TableCell>
-              <TableCell>Need Company Secretarial Service</TableCell>
-              <TableCell>Firm Address</TableCell>
+              <TableCell>Organization Name</TableCell>
+            
+              <TableCell>Death Place</TableCell>
               <TableCell>Brief Details</TableCell>
               <TableCell>Accept Data Policy</TableCell>
               <TableCell>Date Sent</TableCell>
@@ -241,22 +241,15 @@ const WaitlistTable = () => {
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>
                   <TableCell>{row.whatsappNumber}</TableCell>
-                  <TableCell>{row.nameFirm}</TableCell>
-                  <TableCell>{row.needCompanySecretarialService}</TableCell>
-                  <TableCell>{row.addressFirm}</TableCell>
+                  <TableCell>{row.nameOrganization}</TableCell>
+            
+                  <TableCell>{row.placeDeath}</TableCell>
                   <TableCell>{row.serviceBriefDetails}</TableCell>
                   <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
                   <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
-                  <TableCell>
-                    <p
-                      style={{ cursor: "pointer" }}
-                      onClick={() => deleteLister(row.id)}
-                    >
-                      <AutoDeleteIcon />
-                    </p>
-                  </TableCell>
+                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -291,4 +284,4 @@ const WaitlistTable = () => {
   );
 };
 
-export default WaitlistTable;
+export default RegistrarService;

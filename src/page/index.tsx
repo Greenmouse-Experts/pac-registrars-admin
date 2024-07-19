@@ -1,9 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
 import React from "react";
 import { Tab, Tabs } from "@mui/material";
 import "../index.css";
 import WaitlistTable from "./waitlist";
 import Box from "@mui/material/Box";
-import SurvivorList from "./survivorList";
+
+import DocumentManagement from "./DocumentManagement";
+import ProbateService from "./ProbateService";
+import RegistrarService from "./RegistrarService";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -46,7 +51,7 @@ const Homepage = () => {
       <div className="home-bg">
         <div className="img_con">
           <img
-            src="https://res.cloudinary.com/greenmouse-tech/image/upload/v1701951271/Gleemora/Group_48097509_4_1_dyftig.png"
+            src="https://asqyfzgqnbxthtasplew.supabase.co/storage/v1/object/public/cabin-images/logo.svg"
             alt="logo"
             className="logo_img"
           />
@@ -71,14 +76,29 @@ const Homepage = () => {
               onChange={handleChange}
               centered
             >
-              <Tab label="Waitlist" {...a11yProps(0)} />
-              <Tab label="Survivor / Caregiver Mentor" {...a11yProps(1)} />
+              <Tab label="Company Secretarial" {...a11yProps(0)} />
+              <Tab label="Document Management" {...a11yProps(1)} />
+              <Tab label="Probate Services" {...a11yProps(2)} />
+              <Tab label="Registrar Service" {...a11yProps(3)} />
+              <Tab label="Update Name" {...a11yProps(4)} />
+              <Tab label="Update Signature" {...a11yProps(5)} />
+              <Tab label="Update Address" {...a11yProps(6)} />
+              <Tab label="Shareholder Update" {...a11yProps(6)} />
+              <Tab label="Waitlist" {...a11yProps(6)} />
+              <Tab label="Waitlist" {...a11yProps(6)} />
+              <Tab label="Survivor / Caregiver Mentor" {...a11yProps(7)} />
             </Tabs>
             <TabPanel value={value} index={0}>
               <WaitlistTable />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <SurvivorList />
+              <DocumentManagement />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <ProbateService />
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              <RegistrarService />
             </TabPanel>
           </Box>
         </div>
