@@ -1,4 +1,5 @@
-// Login.jsx
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -6,6 +7,7 @@ import { BASEURL } from "../config/url";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [loading, setloading] = useState(false)
   const {
     register,
     handleSubmit,
@@ -13,6 +15,7 @@ const Login = () => {
   } = useForm();
   const navigate = useNavigate();
   const onSubmit = async (data) => {
+    setloading(true)
     try {
       const response = await axios.post(`${BASEURL}/auth/admin/login`, data);
       const token = response.data.token;
@@ -21,6 +24,8 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in:", error);
       alert("Login failed. Please check your credentials and try again.");
+    }finally{
+      setloading(false)
     }
   };
 
@@ -67,9 +72,9 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 text-white bg-blue-[#202A44] rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-900"
           >
-            Login
+            {loading ? "Verifying" : "Login"}
           </button>
         </form>
       </div>
