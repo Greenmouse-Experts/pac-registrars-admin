@@ -73,9 +73,9 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-[#202A44] rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-900"
+            className="w-full px-4 py-2 text-white bg-[#202A44] rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-900"
           >
-            {loading ? "Verifying" : "Login"}
+            {loading ? "Verifying..." : "Login"}
           </button>
         </form>
       </div>
