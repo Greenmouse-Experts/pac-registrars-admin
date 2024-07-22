@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -19,17 +18,16 @@ import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-// import { CSVLink } from "react-csv";
-// import logo from "../assets/9159105.png";
+import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import logo from "../assets/9159105.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../hooks/useFetch";
 import axios from "axios";
 import { BASEURL } from "../config/url";
 import { getToken } from "../helpers/getToken";
-import autoTable from "jspdf-autotable";
 
 interface TablePaginationActionsProps {
   count: number;
@@ -110,7 +108,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     </Box>
   );
 }
-const WaitlistTable = () => {
+const UpdateSignature = () => {
   interface Props {
     created_at: string;
     email: string;
@@ -126,7 +124,7 @@ const WaitlistTable = () => {
   
     loading,
     refetch,
-  } = useFetch("/admin/company/secretarial/service");
+  } = useFetch("/admin/update/signature");
 
   console.log(_data);
   useEffect(() => {
@@ -135,7 +133,7 @@ const WaitlistTable = () => {
   // delete waitlister
   const deleteLister = (id: number) => {
     axios
-      .delete(`${BASEURL}/admin/delete/company/secretarial/service`, {
+      .delete(`${BASEURL}/admin/delete/update/signature`, {
         data: { id },
         headers: {
           Authorization: getToken(),
@@ -156,29 +154,14 @@ const WaitlistTable = () => {
     ...row,
     created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
   }));
+  // pdf download
   const downloadAsPDF = () => {
     const doc = new jsPDF();
-  
-    autoTable(doc, {
-      head: [
-        [
-          "S/N",
-          "Passport",
-          "Full Name",
-          "Email",
-          "Phone Number",
-          "Whatsapp Number",
-          "Firm Name",
-          "Need Company Secretarial Service",
-          "Firm Address",
-          "Brief Details",
-          "Data Policy",
-          "Created At",
-        ]
-      ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (doc as any).autoTable({
+      head: [["S/N", "Full Name", "Email", "phone Number", "Whatsapp Number", "Firm name", "Need company secreterail service", "Firm Address", "Brief Details", "Data Policy", "Brief Details" ]],
       body: tableData?.map((item, index) => [
         index + 1,
-        item.passport, // The base64 encoded image string
         item.name,
         item.email,
         item.phoneNumber,
@@ -188,24 +171,12 @@ const WaitlistTable = () => {
         item.addressFirm,
         item.serviceBriefDetails,
         item.acceptDataPrivacyPolicy,
-        dayjs(item.created_at).format("DD-MMM-YYYY"),
+       
+        dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
-      didDrawCell: (data) => {
-        if (data.column.index === 1 && data.cell.section === 'body') { // Check if the column is "Passport"
-          const img = data.cell.raw; // The base64 encoded image string
-          if (img) {
-            const imgWidth = 20; // Adjust the width of the image
-            const imgHeight = 20; // Adjust the height of the image
-            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
-            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
-            doc.addImage(img, 'JPEG', xPos, yPos, imgWidth, imgHeight);
-            data.cell.text = ''; // Clear the text content to prevent it from being drawn
-          }
-        }
-      },
     });
   
-    doc.save("secretarialService.pdf");
+    doc.save("waitlist.pdf");
   };
 
   const handleChangePage = (
@@ -228,9 +199,8 @@ const WaitlistTable = () => {
       <div>
         {!!tableData?.length && (
           <div className="download_style">
-            {/* <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div>
-              </CSVLink> */}
+            <CSVLink data={data}><div className="csv_download">
+              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
@@ -240,15 +210,21 @@ const WaitlistTable = () => {
           <TableHead>
             <TableRow>
             <TableCell>Passport</TableCell>
-              <TableCell>Name</TableCell>
+              <TableCell> First Name</TableCell>
+              <TableCell> Middle Name</TableCell>
+              <TableCell> Last Name</TableCell>
+
+              
+
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
-              <TableCell>Whatsapp Number</TableCell>
-              <TableCell>Firm Name</TableCell>
-              <TableCell>Need Company Secretarial Service</TableCell>
-              <TableCell>Firm Address</TableCell>
+              <TableCell>BVN</TableCell>
+              <TableCell>Clearing House</TableCell>
               <TableCell>Brief Details</TableCell>
-              <TableCell>Data Policy</TableCell>
+
+              <TableCell>Old Signature</TableCell>
+              <TableCell>New Signature</TableCell>
+
               <TableCell>Date Sent</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -266,21 +242,28 @@ const WaitlistTable = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                   <TableCell component="th" scope="row">
+                       <TableCell component="th" scope="row">
                    <img src={row.passport} height={100} width={100} alt="" />
                   </TableCell>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
+                  
+                  <TableCell>{row.firstName}</TableCell>
+                  <TableCell>{row.middleName}</TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+                 
+
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>
-                  <TableCell>{row.whatsappNumber}</TableCell>
-                  <TableCell>{row.nameFirm}</TableCell>
-                  <TableCell>{row.needCompanySecretarialService}</TableCell>
-                  <TableCell>{row.addressFirm}</TableCell>
+                  <TableCell>{row.bvn}</TableCell>
+                  <TableCell>{row.clearingHouse}</TableCell>
                   <TableCell>{row.serviceBriefDetails}</TableCell>
-                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
                   <TableCell>
+                    <img src={row.uploadOldSignature} height={100} width={100} alt="" />
+                  </TableCell>
+                  <TableCell>
+                    <img src={row.uploadNewSignature} height={100} width={100} alt="" />
+                  </TableCell>
+
+                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell><TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
                   <TableCell>
@@ -325,4 +308,4 @@ const WaitlistTable = () => {
   );
 };
 
-export default WaitlistTable;
+export default UpdateSignature;

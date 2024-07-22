@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -15,21 +14,20 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
+import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 // import { CSVLink } from "react-csv";
-// import logo from "../assets/9159105.png";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import "jspdf-autotable";
+// import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
-import { BASEURL } from "../config/url";
 import { getToken } from "../helpers/getToken";
-import autoTable from "jspdf-autotable";
+import { BASEURL } from "../config/url";
+import axios from "axios";
 
 interface TablePaginationActionsProps {
   count: number;
@@ -110,7 +108,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     </Box>
   );
 }
-const WaitlistTable = () => {
+const KycService = () => {
   interface Props {
     created_at: string;
     email: string;
@@ -120,22 +118,25 @@ const WaitlistTable = () => {
     updated_at: string;
   }
   const [tableData, setTableData] = useState<Props[]>([]);
+  // const fetchWaitList = () => {
+  //   fetch("https://api.gleemora.com/api/waitlist")
+  //     .then((data) => data.json())
+  //     .then((data) => {
+  //       setTableData(data.data);
+  //       setLoading(false);
+  //     })
+  //     .catch(error => console.error(error));
+  // }
+  const { data:_data, loading, refetch } = useFetch('/admin/kyc/service');
 
-  const {
-    data: _data,
-  
-    loading,
-    refetch,
-  } = useFetch("/admin/company/secretarial/service");
-
-  console.log(_data);
+  console.log(_data)
   useEffect(() => {
-    setTableData(_data?.data);
+    setTableData(_data?.data)
   }, [_data]);
   // delete waitlister
   const deleteLister = (id: number) => {
     axios
-      .delete(`${BASEURL}/admin/delete/company/secretarial/service`, {
+      .delete(`${BASEURL}/admin/delete/kyc/service`, {
         data: { id },
         headers: {
           Authorization: getToken(),
@@ -152,61 +153,31 @@ const WaitlistTable = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const data = tableData?.map((row) => ({
-    ...row,
-    created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
-  }));
-  const downloadAsPDF = () => {
-    const doc = new jsPDF();
-  
-    autoTable(doc, {
-      head: [
-        [
-          "S/N",
-          "Passport",
-          "Full Name",
-          "Email",
-          "Phone Number",
-          "Whatsapp Number",
-          "Firm Name",
-          "Need Company Secretarial Service",
-          "Firm Address",
-          "Brief Details",
-          "Data Policy",
-          "Created At",
-        ]
-      ],
-      body: tableData?.map((item, index) => [
-        index + 1,
-        item.passport, // The base64 encoded image string
-        item.name,
-        item.email,
-        item.phoneNumber,
-        item.whatsappNumber,
-        item.nameFirm,
-        item.needCompanySecretarialService,
-        item.addressFirm,
-        item.serviceBriefDetails,
-        item.acceptDataPrivacyPolicy,
-        dayjs(item.created_at).format("DD-MMM-YYYY"),
-      ]),
-      didDrawCell: (data) => {
-        if (data.column.index === 1 && data.cell.section === 'body') { // Check if the column is "Passport"
-          const img = data.cell.raw; // The base64 encoded image string
-          if (img) {
-            const imgWidth = 20; // Adjust the width of the image
-            const imgHeight = 20; // Adjust the height of the image
-            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
-            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
-            doc.addImage(img, 'JPEG', xPos, yPos, imgWidth, imgHeight);
-            data.cell.text = ''; // Clear the text content to prevent it from being drawn
-          }
-        }
-      },
-    });
-  
-    doc.save("secretarialService.pdf");
-  };
+//   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  // pdf download
+//   const downloadAsPDF = () => {
+//     const doc = new jsPDF();
+//     (doc as any).autoTable({
+//       head: [
+//         [
+//           "S/N",
+//           "Full Name",
+//           "Email",
+//           "Suggestions",
+//           "Date Joined",
+//         ],
+//       ],
+//       body: tableData?.map((item, index) => [
+//           index + 1,
+//           item.name,
+//           item.email,
+//           item.suggestions,
+//           dayjs(item.created_at).format("DD-MMM -YYYY"),
+//         ]),
+//     });
+
+//     doc.save("waitlist.pdf");
+//   };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -224,31 +195,28 @@ const WaitlistTable = () => {
   };
   return (
     <>
-      <ToastContainer />
-      <div>
+    <ToastContainer />
+      {/* <div>
         {!!tableData?.length && (
           <div className="download_style">
-            {/* <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div>
-              </CSVLink> */}
+            <CSVLink data={data}><div className="csv_download">
+              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
-      </div>
+      </div> */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>Passport</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
-              <TableCell>Whatsapp Number</TableCell>
-              <TableCell>Firm Name</TableCell>
-              <TableCell>Need Company Secretarial Service</TableCell>
-              <TableCell>Firm Address</TableCell>
-              <TableCell>Brief Details</TableCell>
-              <TableCell>Data Policy</TableCell>
+            
+              <TableCell>Organization Name</TableCell>
+            
+              <TableCell>Service</TableCell>
+         
               <TableCell>Date Sent</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -266,31 +234,21 @@ const WaitlistTable = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                   <TableCell component="th" scope="row">
-                   <img src={row.passport} height={100} width={100} alt="" />
-                  </TableCell>
                   <TableCell component="th" scope="row">
                     {row.name}
                   </TableCell>
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>
-                  <TableCell>{row.whatsappNumber}</TableCell>
-                  <TableCell>{row.nameFirm}</TableCell>
-                  <TableCell>{row.needCompanySecretarialService}</TableCell>
-                  <TableCell>{row.addressFirm}</TableCell>
-                  <TableCell>{row.serviceBriefDetails}</TableCell>
-                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
+                  
+                  <TableCell>{row.nameOrganization}</TableCell>
+            
+                  <TableCell>{row.kycService}</TableCell>
+                 
+                
                   <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
-                  <TableCell>
-                    <p
-                      style={{ cursor: "pointer" }}
-                      onClick={() => deleteLister(row.id)}
-                    >
-                      <AutoDeleteIcon />
-                    </p>
-                  </TableCell>
+                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -325,4 +283,4 @@ const WaitlistTable = () => {
   );
 };
 
-export default WaitlistTable;
+export default KycService;

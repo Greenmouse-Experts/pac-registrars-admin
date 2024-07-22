@@ -15,21 +15,20 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
+import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-// import { CSVLink } from "react-csv";
-// import logo from "../assets/9159105.png";
+import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
-import { BASEURL } from "../config/url";
 import { getToken } from "../helpers/getToken";
-import autoTable from "jspdf-autotable";
+import { BASEURL } from "../config/url";
+import axios from "axios";
 
 interface TablePaginationActionsProps {
   count: number;
@@ -110,7 +109,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     </Box>
   );
 }
-const WaitlistTable = () => {
+const ShareHolderUpdate = () => {
   interface Props {
     created_at: string;
     email: string;
@@ -121,21 +120,16 @@ const WaitlistTable = () => {
   }
   const [tableData, setTableData] = useState<Props[]>([]);
 
-  const {
-    data: _data,
-  
-    loading,
-    refetch,
-  } = useFetch("/admin/company/secretarial/service");
+  const { data:_data, loading, refetch } = useFetch('/admin/shareholder/update');
 
-  console.log(_data);
+  console.log(_data)
   useEffect(() => {
-    setTableData(_data?.data);
+    setTableData(_data?.data)
   }, [_data]);
   // delete waitlister
   const deleteLister = (id: number) => {
     axios
-      .delete(`${BASEURL}/admin/delete/company/secretarial/service`, {
+      .delete(`${BASEURL}/admin/delete/shareholder/update`, {
         data: { id },
         headers: {
           Authorization: getToken(),
@@ -152,60 +146,31 @@ const WaitlistTable = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const data = tableData?.map((row) => ({
-    ...row,
-    created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
-  }));
+  const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  // pdf download
   const downloadAsPDF = () => {
     const doc = new jsPDF();
-  
-    autoTable(doc, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (doc as any).autoTable({
       head: [
         [
           "S/N",
-          "Passport",
           "Full Name",
           "Email",
-          "Phone Number",
-          "Whatsapp Number",
-          "Firm Name",
-          "Need Company Secretarial Service",
-          "Firm Address",
-          "Brief Details",
-          "Data Policy",
-          "Created At",
-        ]
+          "Suggestions",
+          "Date Joined",
+        ],
       ],
       body: tableData?.map((item, index) => [
-        index + 1,
-        item.passport, // The base64 encoded image string
-        item.name,
-        item.email,
-        item.phoneNumber,
-        item.whatsappNumber,
-        item.nameFirm,
-        item.needCompanySecretarialService,
-        item.addressFirm,
-        item.serviceBriefDetails,
-        item.acceptDataPrivacyPolicy,
-        dayjs(item.created_at).format("DD-MMM-YYYY"),
-      ]),
-      didDrawCell: (data) => {
-        if (data.column.index === 1 && data.cell.section === 'body') { // Check if the column is "Passport"
-          const img = data.cell.raw; // The base64 encoded image string
-          if (img) {
-            const imgWidth = 20; // Adjust the width of the image
-            const imgHeight = 20; // Adjust the height of the image
-            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
-            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
-            doc.addImage(img, 'JPEG', xPos, yPos, imgWidth, imgHeight);
-            data.cell.text = ''; // Clear the text content to prevent it from being drawn
-          }
-        }
-      },
+          index + 1,
+          item.name,
+          item.email,
+          item.suggestions,
+          dayjs(item.created_at).format("DD-MMM -YYYY"),
+        ]),
     });
-  
-    doc.save("secretarialService.pdf");
+
+    doc.save("waitlist.pdf");
   };
 
   const handleChangePage = (
@@ -224,7 +189,7 @@ const WaitlistTable = () => {
   };
   return (
     <>
-      <ToastContainer />
+    <ToastContainer />
       <div>
         {!!tableData?.length && (
           <div className="download_style">
@@ -236,19 +201,29 @@ const WaitlistTable = () => {
         )}
       </div>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 2000 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>Passport</TableCell>
-              <TableCell>Name</TableCell>
+            <TableCell> First Name</TableCell>
+              <TableCell> Middle Name</TableCell>
+              <TableCell> Last Name</TableCell>
+
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
-              <TableCell>Whatsapp Number</TableCell>
-              <TableCell>Firm Name</TableCell>
-              <TableCell>Need Company Secretarial Service</TableCell>
-              <TableCell>Firm Address</TableCell>
-              <TableCell>Brief Details</TableCell>
-              <TableCell>Data Policy</TableCell>
+            
+            
+              <TableCell>BVN</TableCell>
+              <TableCell>NIN</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Clearing House</TableCell>
+
+              <TableCell>Next of Kin First Name</TableCell>
+              <TableCell>Next of Kin Last Name</TableCell>
+              <TableCell>Relationship with Next of Kin</TableCell>
+              <TableCell>Next of Kin Phone Number</TableCell>
+              <TableCell>Next of Kin Email</TableCell>
+              
+              <TableCell>Accept Data Policy</TableCell>
               <TableCell>Date Sent</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -266,31 +241,31 @@ const WaitlistTable = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                   <TableCell component="th" scope="row">
-                   <img src={row.passport} height={100} width={100} alt="" />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
+                <TableCell>{row.firstName}</TableCell>
+                  <TableCell>{row.middleName}</TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>
-                  <TableCell>{row.whatsappNumber}</TableCell>
-                  <TableCell>{row.nameFirm}</TableCell>
-                  <TableCell>{row.needCompanySecretarialService}</TableCell>
-                  <TableCell>{row.addressFirm}</TableCell>
-                  <TableCell>{row.serviceBriefDetails}</TableCell>
+                  
+            
+                  <TableCell>{row.bvn}</TableCell>
+                  <TableCell>{row.nin}</TableCell>
+
+                  <TableCell>{row.clearingHouseNumber}</TableCell>
+                  <TableCell>{row.gender}</TableCell>
+                  <TableCell>{row.kinFirstName}</TableCell>
+                  <TableCell>{row.kinLastName}</TableCell>
+                  <TableCell>{row.kinRelationship}</TableCell>
+                  <TableCell>{row.kinPhoneNumber}</TableCell>
+                  <TableCell>{row.kinEmail}</TableCell>
+                 
+
                   <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
                   <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
-                  <TableCell>
-                    <p
-                      style={{ cursor: "pointer" }}
-                      onClick={() => deleteLister(row.id)}
-                    >
-                      <AutoDeleteIcon />
-                    </p>
-                  </TableCell>
+                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -325,4 +300,4 @@ const WaitlistTable = () => {
   );
 };
 
-export default WaitlistTable;
+export default ShareHolderUpdate;

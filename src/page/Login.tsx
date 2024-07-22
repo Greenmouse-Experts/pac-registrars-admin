@@ -33,6 +33,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#202A44]">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
+       <img src="https://asqyfzgqnbxthtasplew.supabase.co/storage/v1/object/public/cabin-images/logo.svg"/>
         
         <h2 className="text-2xl font-bold text-center"> Admin Login</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

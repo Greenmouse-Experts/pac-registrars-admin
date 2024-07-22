@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -127,7 +128,7 @@ const RegistrarService = () => {
   //     })
   //     .catch(error => console.error(error));
   // }
-  const { data:_data, loading, refetch } = useFetch('/admin/registrar/service');
+  const { data:_data, loading, refetch } = useFetch('/admin/probate/service');
 
   console.log(_data)
   useEffect(() => {
@@ -136,7 +137,7 @@ const RegistrarService = () => {
   // delete waitlister
   const deleteLister = (id: number) => {
     axios
-      .delete(`${BASEURL}/admin/delete/registrar/service`, {
+      .delete(`${BASEURL}/admin/delete/probate/service`, {
         data: { id },
         headers: {
           Authorization: getToken(),
@@ -155,29 +156,42 @@ const RegistrarService = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 //   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
   // pdf download
-//   const downloadAsPDF = () => {
-//     const doc = new jsPDF();
-//     (doc as any).autoTable({
-//       head: [
-//         [
-//           "S/N",
-//           "Full Name",
-//           "Email",
-//           "Suggestions",
-//           "Date Joined",
-//         ],
-//       ],
-//       body: tableData?.map((item, index) => [
-//           index + 1,
-//           item.name,
-//           item.email,
-//           item.suggestions,
-//           dayjs(item.created_at).format("DD-MMM -YYYY"),
-//         ]),
-//     });
+  const downloadAsPDF = () => {
+    const doc = new jsPDF();
+    (doc as any).autoTable({
+      head: [
+        [
+          "S/N",
+          "Full Name",
+          "Email",
+          "Phone Number",
+          "Whatsapp Number",
+          "Name of Organization",
+          "Death Place",
+          "Brief Details",
+          "Data Policy",
+          
+        ],
+      ],
+      body: tableData?.map((item, index) => [
+          index + 1,
+          item.name,
+          item.email,
+          item.phoneNumber,
+          item.whatsappNumber,
+          item.nameOrganization,
+          item.placeDeath,
+          item.serviceBriefDetails,
+          item.acceptDataPrivacyPolicy,
+         
+          dayjs(item.created_at).format("DD-MMM -YYYY"),
+        ]),
+    });
 
-//     doc.save("waitlist.pdf");
-//   };
+    doc.save("registrarsService.pdf");
+  };
+
+
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -196,15 +210,16 @@ const RegistrarService = () => {
   return (
     <>
     <ToastContainer />
-      {/* <div>
+      <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            {/* <CSVLink data={data}><div className="csv_download">
+              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div>
+              </CSVLink> */}
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
-      </div> */}
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

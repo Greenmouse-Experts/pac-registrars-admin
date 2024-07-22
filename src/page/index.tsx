@@ -9,6 +9,11 @@ import Box from "@mui/material/Box";
 import DocumentManagement from "./DocumentManagement";
 import ProbateService from "./ProbateService";
 import RegistrarService from "./RegistrarService";
+import UpdateName from "./updateName";
+import UpdateSignature from "./UpdateSignature";
+import UpdateAddress from "./UpdateAddress";
+import ShareHolderUpdate from "./ShareHolder";
+import KycService from "./KycService";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -83,10 +88,9 @@ const Homepage = () => {
               <Tab label="Update Name" {...a11yProps(4)} />
               <Tab label="Update Signature" {...a11yProps(5)} />
               <Tab label="Update Address" {...a11yProps(6)} />
-              <Tab label="Shareholder Update" {...a11yProps(6)} />
-              <Tab label="Waitlist" {...a11yProps(6)} />
-              <Tab label="Waitlist" {...a11yProps(6)} />
-              <Tab label="Survivor / Caregiver Mentor" {...a11yProps(7)} />
+              <Tab label="Shareholder Update" {...a11yProps(7)} />
+             
+              <Tab label="Kyc Service" {...a11yProps(8)} />
             </Tabs>
             <TabPanel value={value} index={0}>
               <WaitlistTable />
@@ -99,6 +103,22 @@ const Homepage = () => {
             </TabPanel>
             <TabPanel value={value} index={3}>
               <RegistrarService />
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+              <UpdateName />
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+              <UpdateSignature />
+            </TabPanel>
+            <TabPanel value={value} index={6}>
+              <UpdateAddress />
+            </TabPanel>
+            <TabPanel value={value} index={7}>
+              <ShareHolderUpdate />
+            </TabPanel>
+           
+            <TabPanel value={value} index={8}>
+              <KycService />
             </TabPanel>
           </Box>
         </div>

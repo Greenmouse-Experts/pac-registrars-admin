@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -14,16 +15,16 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
+import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 // import { CSVLink } from "react-csv";
-// import jsPDF from "jspdf";
+import jsPDF from "jspdf";
 import "jspdf-autotable";
 // import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../hooks/useFetch";
 import { getToken } from "../helpers/getToken";
 import { BASEURL } from "../config/url";
@@ -118,20 +119,16 @@ const DocumentManagement = () => {
     updated_at: string;
   }
   const [tableData, setTableData] = useState<Props[]>([]);
-  // const fetchWaitList = () => {
-  //   fetch("https://api.gleemora.com/api/waitlist")
-  //     .then((data) => data.json())
-  //     .then((data) => {
-  //       setTableData(data.data);
-  //       setLoading(false);
-  //     })
-  //     .catch(error => console.error(error));
-  // }
-  const { data:_data, loading, refetch } = useFetch('/admin/document/management/system');
 
-  console.log(_data)
+  const {
+    data: _data,
+    loading,
+    refetch,
+  } = useFetch("/admin/document/management/system");
+
+  console.log(_data);
   useEffect(() => {
-    setTableData(_data?.data)
+    setTableData(_data?.data);
   }, [_data]);
   // delete waitlister
   const deleteLister = (id: number) => {
@@ -153,31 +150,34 @@ const DocumentManagement = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  // const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const data = tableData?.map((row) => ({
+    ...row,
+    created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
+  }));
   // pdf download
-  // const downloadAsPDF = () => {
-  //   const doc = new jsPDF();
-  //   (doc as any).autoTable({
-  //     head: [
-  //       [
-  //         "S/N",
-  //         "Full Name",
-  //         "Email",
-  //         "Suggestions",
-  //         "Date Joined",
-  //       ],
-  //     ],
-  //     body: tableData?.map((item, index) => [
-  //         index + 1,
-  //         item.name,
-  //         item.email,
-  //         item.suggestions,
-  //         dayjs(item.created_at).format("DD-MMM -YYYY"),
-  //       ]),
-  //   });
+  const downloadAsPDF = () => {
+    const doc = new jsPDF();
+    (doc as any).autoTable({
+      head: [["S/N", "Full Name", "Email", "Phone Number", "Whatsapp Number", "Name of Organization", "Address of Organization", "Service Details", "Data Policy", "Date Joined"]],
+      body: tableData?.map((item, index) => [
+        index + 1,
+        item.name,
+        item.email,
+        item.phoneNumber,
+        item.whatsappNumber,
+        item.nameOrganization,
+        item.addressOrganization,
+        item.serviceBriefDetails,
+        item.acceptDataPrivacyPolicy,
+        dayjs(item.created_at).format("DD-MMM -YYYY"),
+      ]),
+    });
 
-  //   doc.save("waitlist.pdf");
-  // };
+    doc.save("documentManagement.pdf");
+  };
+
+  
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -195,26 +195,31 @@ const DocumentManagement = () => {
   };
   return (
     <>
-    <ToastContainer />
-      {/* <div>
+      <ToastContainer />
+      <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            {/* <CSVLink data={data}>
+              <div className="csv_download">
+                <img src={logo} alt="csv" width={26} height={26} />{" "}
+                <span>Csv Download</span>
+              </div>
+            </CSVLink> */}
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
-      </div> */}
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>Passport</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
               <TableCell>Whatsapp Number</TableCell>
               <TableCell>Organization Name</TableCell>
-            
+
               <TableCell>Organization Address</TableCell>
               <TableCell>Brief Details</TableCell>
               <TableCell>Accept Data Policy</TableCell>
@@ -230,29 +235,40 @@ const DocumentManagement = () => {
                     page * rowsPerPage + rowsPerPage
                   )
                 : tableData
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              )?.map((row: any) => (
-                <TableRow
-                  key={row.email}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.phoneNumber}</TableCell>
-                  <TableCell>{row.whatsappNumber}</TableCell>
-                  <TableCell>{row.nameOrganization}</TableCell>
-            
-                  <TableCell>{row.addressOrganization}</TableCell>
-                  <TableCell>{row.serviceBriefDetails}</TableCell>
-                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
-                  <TableCell>
-                    {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
-                  </TableCell>
-                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
-                </TableRow>
-              ))}
+              )
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ?.map((row: any) => (
+                  <TableRow
+                    key={row.email}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <img src={row.passport} height={100} width={100} alt="" />
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell>{row.email}</TableCell>
+                    <TableCell>{row.phoneNumber}</TableCell>
+                    <TableCell>{row.whatsappNumber}</TableCell>
+                    <TableCell>{row.nameOrganization}</TableCell>
+
+                    <TableCell>{row.addressOrganization}</TableCell>
+                    <TableCell>{row.serviceBriefDetails}</TableCell>
+                    <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
+                    <TableCell>
+                      {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      <p
+                        style={{ cursor: "pointer" }}
+                        onClick={() => deleteLister(row.id)}
+                      >
+                        <AutoDeleteIcon />
+                      </p>
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
           <TableFooter>
             <TableRow>
