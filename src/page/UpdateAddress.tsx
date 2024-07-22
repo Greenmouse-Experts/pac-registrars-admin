@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -156,6 +157,7 @@ const UpdateAddress = () => {
   // pdf download
   const downloadAsPDF = () => {
     const doc = new jsPDF({ orientation: "landscape" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
       head: [["S/N", "Full Name", "Email", "Suggestions", "Date Joined"]],
       body: tableData?.map((item, index) => [
@@ -167,7 +169,7 @@ const UpdateAddress = () => {
       ]),
     });
 
-    doc.save("waitlist.pdf");
+    doc.save("updateAddress.pdf");
   };
 
   const handleChangePage = (
@@ -190,12 +192,12 @@ const UpdateAddress = () => {
       <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}>
+            {/* <CSVLink data={data}>
               <div className="csv_download">
                 <img src={logo} alt="csv" width={26} height={26} />{" "}
                 <span>Csv Download</span>
               </div>
-            </CSVLink>
+            </CSVLink> */}
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}

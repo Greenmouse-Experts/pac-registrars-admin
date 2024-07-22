@@ -169,7 +169,7 @@ const ShareHolderUpdate = () => {
       ]),
     });
 
-    doc.save("waitlist.pdf");
+    doc.save("shareholder.pdf");
   };
 
   const handleChangePage = (

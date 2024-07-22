@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -18,10 +19,10 @@ import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { CSVLink } from "react-csv";
+// import { CSVLink } from "react-csv";
+// import logo from "../assets/9159105.png";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import logo from "../assets/9159105.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../hooks/useFetch";
@@ -190,7 +191,7 @@ const UpdateSignature = () => {
       ]),
     });
 
-    doc.save("waitlist.pdf");
+    doc.save("updateSignature.pdf");
   };
 
   const handleChangePage = (
@@ -213,12 +214,12 @@ const UpdateSignature = () => {
       <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}>
+            {/* <CSVLink data={data}>
               <div className="csv_download">
                 <img src={logo} alt="csv" width={26} height={26} />{" "}
                 <span>Csv Download</span>
               </div>
-            </CSVLink>
+            </CSVLink> */}
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}

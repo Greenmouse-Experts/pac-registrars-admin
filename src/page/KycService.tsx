@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
 import { useState, useEffect } from "react";
@@ -153,31 +154,32 @@ const KycService = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  //   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
-  // pdf download
-  //   const downloadAsPDF = () => {
-  //     const doc = new jsPDF({ orientation: "landscape" });
-  //     (doc as any).autoTable({
-  //       head: [
-  //         [
-  //           "S/N",
-  //           "Full Name",
-  //           "Email",
-  //           "Suggestions",
-  //           "Date Joined",
-  //         ],
-  //       ],
-  //       body: tableData?.map((item, index) => [
-  //           index + 1,
-  //           item.name,
-  //           item.email,
-  //           item.suggestions,
-  //           dayjs(item.created_at).format("DD-MMM -YYYY"),
-  //         ]),
-  //     });
+    const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
 
-  //     doc.save("waitlist.pdf");
-  //   };
+    const downloadAsPDF = () => {
+      const doc = new jsPDF({ orientation: "landscape" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (doc as any).autoTable({
+        head: [
+          [
+            "S/N",
+            "Full Name",
+            "Email",
+            "Suggestions",
+            "Date Joined",
+          ],
+        ],
+        body: tableData?.map((item, index) => [
+            index + 1,
+            item.name,
+            item.email,
+            item.suggestions,
+            dayjs(item.created_at).format("DD-MMM -YYYY"),
+          ]),
+      });
+
+      doc.save("kycService.pdf");
+    };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -196,15 +198,16 @@ const KycService = () => {
   return (
     <>
       <ToastContainer />
-      {/* <div>
+      <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            {/* <CSVLink data={data}><div className="csv_download">
+              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div>
+              </CSVLink> */}
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
-      </div> */}
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
