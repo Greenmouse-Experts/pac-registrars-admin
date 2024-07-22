@@ -157,7 +157,7 @@ const DocumentManagement = () => {
   }));
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "landscape" });
     (doc as any).autoTable({
       head: [["S/N", "Full Name", "Email", "Phone Number", "Whatsapp Number", "Name of Organization", "Address of Organization", "Service Details", "Data Policy", "Date Joined"]],
       body: tableData?.map((item, index) => [

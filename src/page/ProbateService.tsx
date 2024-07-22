@@ -15,7 +15,7 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TableFooter, TablePagination } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
+import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
@@ -24,7 +24,7 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import "jspdf-autotable";
 // import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../hooks/useFetch";
 import { getToken } from "../helpers/getToken";
 import { BASEURL } from "../config/url";
@@ -128,11 +128,11 @@ const ProbateService = () => {
   //     })
   //     .catch(error => console.error(error));
   // }
-  const { data:_data, loading, refetch } = useFetch('/admin/probate/service');
+  const { data: _data, loading, refetch } = useFetch("/admin/probate/service");
 
-  console.log(_data)
+  console.log(_data);
   useEffect(() => {
-    setTableData(_data?.data)
+    setTableData(_data?.data);
   }, [_data]);
   // delete waitlister
   const deleteLister = (id: number) => {
@@ -154,10 +154,10 @@ const ProbateService = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-//   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  //   const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "landscape" });
     (doc as any).autoTable({
       head: [
         [
@@ -170,28 +170,25 @@ const ProbateService = () => {
           "Death Place",
           "Brief Details",
           "Data Policy",
-          
         ],
       ],
       body: tableData?.map((item, index) => [
-          index + 1,
-          item.name,
-          item.email,
-          item.phoneNumber,
-          item.whatsappNumber,
-          item.nameOrganization,
-          item.placeDeath,
-          item.serviceBriefDetails,
-          item.acceptDataPrivacyPolicy,
-         
-          dayjs(item.created_at).format("DD-MMM -YYYY"),
-        ]),
+        index + 1,
+        item.name,
+        item.email,
+        item.phoneNumber,
+        item.whatsappNumber,
+        item.nameOrganization,
+        item.placeDeath,
+        item.serviceBriefDetails,
+        item.acceptDataPrivacyPolicy,
+
+        dayjs(item.created_at).format("DD-MMM -YYYY"),
+      ]),
     });
 
     doc.save("probate.pdf");
   };
-
-
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -209,7 +206,7 @@ const ProbateService = () => {
   };
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div>
         {!!tableData?.length && (
           <div className="download_style">
@@ -229,7 +226,7 @@ const ProbateService = () => {
               <TableCell>Phone Number</TableCell>
               <TableCell>Whatsapp Number</TableCell>
               <TableCell>Organization Name</TableCell>
-            
+
               <TableCell>Death Place</TableCell>
               <TableCell>Brief Details</TableCell>
               <TableCell>Accept Data Policy</TableCell>
@@ -257,14 +254,21 @@ const ProbateService = () => {
                   <TableCell>{row.phoneNumber}</TableCell>
                   <TableCell>{row.whatsappNumber}</TableCell>
                   <TableCell>{row.nameOrganization}</TableCell>
-            
+
                   <TableCell>{row.placeDeath}</TableCell>
                   <TableCell>{row.serviceBriefDetails}</TableCell>
                   <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
                   <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
-                  <TableCell><p style={{cursor: 'pointer'}} onClick={() => deleteLister(row.id)}><AutoDeleteIcon/></p></TableCell>
+                  <TableCell>
+                    <p
+                      style={{ cursor: "pointer" }}
+                      onClick={() => deleteLister(row.id)}
+                    >
+                      <AutoDeleteIcon />
+                    </p>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>

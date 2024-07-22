@@ -121,7 +121,7 @@ const UpdateSignature = () => {
 
   const {
     data: _data,
-  
+
     loading,
     refetch,
   } = useFetch("/admin/update/signature");
@@ -156,10 +156,24 @@ const UpdateSignature = () => {
   }));
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "landscape" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
-      head: [["S/N", "Full Name", "Email", "phone Number", "Whatsapp Number", "Firm name", "Need company secreterail service", "Firm Address", "Brief Details", "Data Policy", "Brief Details" ]],
+      head: [
+        [
+          "S/N",
+          "Full Name",
+          "Email",
+          "phone Number",
+          "Whatsapp Number",
+          "Firm name",
+          "Need company secreterail service",
+          "Firm Address",
+          "Brief Details",
+          "Data Policy",
+          "Brief Details",
+        ],
+      ],
       body: tableData?.map((item, index) => [
         index + 1,
         item.name,
@@ -171,11 +185,11 @@ const UpdateSignature = () => {
         item.addressFirm,
         item.serviceBriefDetails,
         item.acceptDataPrivacyPolicy,
-       
+
         dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
     });
-  
+
     doc.save("waitlist.pdf");
   };
 
@@ -199,8 +213,12 @@ const UpdateSignature = () => {
       <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            <CSVLink data={data}>
+              <div className="csv_download">
+                <img src={logo} alt="csv" width={26} height={26} />{" "}
+                <span>Csv Download</span>
+              </div>
+            </CSVLink>
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
@@ -209,12 +227,10 @@ const UpdateSignature = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>Passport</TableCell>
+              <TableCell>Passport</TableCell>
               <TableCell> First Name</TableCell>
               <TableCell> Middle Name</TableCell>
               <TableCell> Last Name</TableCell>
-
-              
 
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
@@ -242,14 +258,13 @@ const UpdateSignature = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                       <TableCell component="th" scope="row">
-                   <img src={row.passport} height={100} width={100} alt="" />
+                  <TableCell component="th" scope="row">
+                    <img src={row.passport} height={100} width={100} alt="" />
                   </TableCell>
-                  
+
                   <TableCell>{row.firstName}</TableCell>
                   <TableCell>{row.middleName}</TableCell>
                   <TableCell>{row.lastName}</TableCell>
-                 
 
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>
@@ -257,13 +272,24 @@ const UpdateSignature = () => {
                   <TableCell>{row.clearingHouse}</TableCell>
                   <TableCell>{row.serviceBriefDetails}</TableCell>
                   <TableCell>
-                    <img src={row.uploadOldSignature} height={100} width={100} alt="" />
+                    <img
+                      src={row.uploadOldSignature}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
                   </TableCell>
                   <TableCell>
-                    <img src={row.uploadNewSignature} height={100} width={100} alt="" />
+                    <img
+                      src={row.uploadNewSignature}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
                   </TableCell>
 
-                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell><TableCell>
+                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
+                  <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
                   <TableCell>

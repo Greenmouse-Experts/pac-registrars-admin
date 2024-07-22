@@ -123,7 +123,7 @@ const WaitlistTable = () => {
 
   const {
     data: _data,
-  
+
     loading,
     refetch,
   } = useFetch("/admin/company/secretarial/service");
@@ -157,13 +157,13 @@ const WaitlistTable = () => {
     created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
   }));
   const downloadAsPDF = () => {
-    const doc = new jsPDF();
   
+    const doc = new jsPDF({ orientation: "landscape" });
     autoTable(doc, {
       head: [
         [
           "S/N",
-          "Passport",
+
           "Full Name",
           "Email",
           "Phone Number",
@@ -174,11 +174,11 @@ const WaitlistTable = () => {
           "Brief Details",
           "Data Policy",
           "Created At",
-        ]
+        ],
       ],
       body: tableData?.map((item, index) => [
         index + 1,
-        item.passport, // The base64 encoded image string
+        // item.passport, // The base64 encoded image string
         item.name,
         item.email,
         item.phoneNumber,
@@ -191,20 +191,21 @@ const WaitlistTable = () => {
         dayjs(item.created_at).format("DD-MMM-YYYY"),
       ]),
       didDrawCell: (data) => {
-        if (data.column.index === 1 && data.cell.section === 'body') { // Check if the column is "Passport"
+        if (data.column.index === 1 && data.cell.section === "body") {
+          // Check if the column is "Passport"
           const img = data.cell.raw; // The base64 encoded image string
           if (img) {
             const imgWidth = 20; // Adjust the width of the image
             const imgHeight = 20; // Adjust the height of the image
             const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
             const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
-            doc.addImage(img, 'JPEG', xPos, yPos, imgWidth, imgHeight);
-            data.cell.text = ''; // Clear the text content to prevent it from being drawn
+            doc.addImage(img, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
           }
         }
       },
     });
-  
+
     doc.save("secretarialService.pdf");
   };
 
@@ -239,7 +240,7 @@ const WaitlistTable = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>Passport</TableCell>
+              <TableCell>Passport</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
@@ -266,8 +267,8 @@ const WaitlistTable = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                   <TableCell component="th" scope="row">
-                   <img src={row.passport} height={100} width={100} alt="" />
+                  <TableCell component="th" scope="row">
+                    <img src={row.passport} height={100} width={100} alt="" />
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {row.name}

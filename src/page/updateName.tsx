@@ -121,7 +121,7 @@ const UpdateName = () => {
 
   const {
     data: _data,
-  
+
     loading,
     refetch,
   } = useFetch("/admin/update/my/name");
@@ -156,10 +156,27 @@ const UpdateName = () => {
   }));
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "landscape" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
-      head: [["S/N", "Old FirstName", "Old MiddleName", "Old LastName", "New FirstName", "New MiddleName", "New LastName","Email", "phone Number", "BVN", "Clearing House", " Brief Details", "Data Policy", "Brief Details" ]],
+      head: [
+        [
+          "S/N",
+          "Old FirstName",
+          "Old MiddleName",
+          "Old LastName",
+          "New FirstName",
+          "New MiddleName",
+          "New LastName",
+          "Email",
+          "phone Number",
+          "BVN",
+          "Clearing House",
+          " Brief Details",
+          "Data Policy",
+          "Brief Details",
+        ],
+      ],
       body: tableData?.map((item, index) => [
         index + 1,
         item.oldFirstName,
@@ -178,11 +195,9 @@ const UpdateName = () => {
         dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
     });
-  
+
     doc.save("updateName.pdf");
   };
-
- 
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -204,8 +219,12 @@ const UpdateName = () => {
       <div>
         {!!tableData?.length && (
           <div className="download_style">
-            <CSVLink data={data}><div className="csv_download">
-              <img src={logo} alt="csv" width={26} height={26}/> <span>Csv Download</span></div></CSVLink>
+            <CSVLink data={data}>
+              <div className="csv_download">
+                <img src={logo} alt="csv" width={26} height={26} />{" "}
+                <span>Csv Download</span>
+              </div>
+            </CSVLink>
             <button onClick={downloadAsPDF} className="pdf_download"></button>
           </div>
         )}
@@ -214,7 +233,7 @@ const UpdateName = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>Passport</TableCell>
+              <TableCell>Passport</TableCell>
               <TableCell>Old First Name</TableCell>
               <TableCell>Old Middle Name</TableCell>
               <TableCell>Old Last Name</TableCell>
@@ -245,8 +264,8 @@ const UpdateName = () => {
                   key={row.email}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                       <TableCell component="th" scope="row">
-                   <img src={row.passport} height={100} width={100} alt="" />
+                  <TableCell component="th" scope="row">
+                    <img src={row.passport} height={100} width={100} alt="" />
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {row.oldFirstName}
@@ -263,10 +282,16 @@ const UpdateName = () => {
                   <TableCell>{row.clearingHouse}</TableCell>
                   <TableCell>{row.serviceBriefDetails}</TableCell>
                   <TableCell>
-                    <img src={row.updateDocument} height={100} width={100} alt="" />
+                    <img
+                      src={row.updateDocument}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
                   </TableCell>
 
-                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell><TableCell>
+                  <TableCell>{row.acceptDataPrivacyPolicy}</TableCell>
+                  <TableCell>
                     {dayjs(row.createdAt).format("dd DD, MMMM, YYYY")}
                   </TableCell>
                   <TableCell>
