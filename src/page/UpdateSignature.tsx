@@ -163,32 +163,83 @@ const UpdateSignature = () => {
       head: [
         [
           "S/N",
-          "Full Name",
+          "Passport",
+          "First Name",
+          "Middle Name",
+          "Last Name",
           "Email",
-          "phone Number",
-          "Whatsapp Number",
-          "Firm name",
-          "Need company secreterail service",
-          "Firm Address",
+          "Phone Number",
+          "BVN",
+          "Clearing House",
           "Brief Details",
+          "Old Signature",
+          "New Signature",
           "Data Policy",
-          "Brief Details",
+          "Date Sent",
         ],
       ],
+
       body: tableData?.map((item, index) => [
         index + 1,
-        item.name,
+        "",
+        item.firstName,
+        item.middleName,
+        item.lastName,
         item.email,
         item.phoneNumber,
-        item.whatsappNumber,
-        item.nameFirm,
-        item.needCompanySecretarialService,
-        item.addressFirm,
+        item.bvn,
+        item.clearingHouse,
         item.serviceBriefDetails,
+        "",
+        "",
         item.acceptDataPrivacyPolicy,
-
         dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
+      didDrawCell: (data) => {
+        if (data.column.index === 1 && data.cell.section === "body") {
+          // Check if the column is "Passport"
+          const img = tableData[data.row.index].passport; // Get the base64 encoded image string
+          if (img) {
+            const imgWidth = 20; // Adjust the width of the image
+            const imgHeight = 15; // Adjust the height of the image
+            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+            doc.addImage(img, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
+          }
+        }else if (data.column.index === 10 && data.cell.section === "body") {
+          // Check if the column is "Document"
+          const docImg = tableData[data.row.index].uploadOldSignature; // Get the base64 encoded image string
+          if (docImg) {
+            const imgWidth = 20; // Adjust the width of the image
+            const imgHeight = 15; // Adjust the height of the image
+            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+            doc.addImage(docImg, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
+          }
+        }
+        else if (data.column.index === 11 && data.cell.section === "body") {
+          // Check if the column is "Document"
+          const docImg = tableData[data.row.index].uploadNewSignature; // Get the base64 encoded image string
+          if (docImg) {
+            const imgWidth = 20; // Adjust the width of the image
+            const imgHeight = 15; // Adjust the height of the image
+            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+            doc.addImage(docImg, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
+          }
+        }
+      },
+      styles: {
+        cellPadding: 1, // Adjust cell padding for additional space around text
+        rowHeight: 20,  // Adjust row height if needed
+        overflow: 'linebreak', 
+        textAlign: 'center', // Center text horizontally
+        valign: 'middle', // Ensure text does not overflow
+      },
+      margin: { top: 10 },
     });
 
     doc.save("updateSignature.pdf");
@@ -241,7 +292,7 @@ const UpdateSignature = () => {
 
               <TableCell>Old Signature</TableCell>
               <TableCell>New Signature</TableCell>
-
+              <TableCell>Data Policy</TableCell>
               <TableCell>Date Sent</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>

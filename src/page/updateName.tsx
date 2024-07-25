@@ -157,12 +157,23 @@ const UpdateName = () => {
   }));
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF({ orientation: "landscape" });
+    // Define custom page width and height
+    const customPageWidth = 297; // A4 width in mm for landscape
+    const customPageHeight = 210; // A4 height in mm for landscape
+  
+    // Create a jsPDF instance with custom size
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: [customPageWidth, customPageHeight]
+    });
+  
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
       head: [
         [
           "S/N",
+          "Passport",
           "Old FirstName",
           "Old MiddleName",
           "Old LastName",
@@ -170,33 +181,68 @@ const UpdateName = () => {
           "New MiddleName",
           "New LastName",
           "Email",
-          "phone Number",
+          "Phone Number",
           "BVN",
           "Clearing House",
-          " Brief Details",
+          "Brief Details",
+          "Document",
           "Data Policy",
           "Brief Details",
         ],
       ],
       body: tableData?.map((item, index) => [
         index + 1,
+        "",
         item.oldFirstName,
         item.oldMiddleName,
         item.oldLastName,
         item.newFirstName,
         item.newMiddleName,
         item.newLastName,
-
         item.email,
         item.phoneNumber,
         item.bvn,
         item.clearingHouse,
         item.serviceBriefDetails,
+        "",
         item.acceptDataPrivacyPolicy,
-        dayjs(item.created_at).format("DD-MMM -YYYY"),
+        dayjs(item.created_at).format("DD-MMM-YYYY"),
       ]),
+      didDrawCell: (data) => {
+        if (data.column.index === 1 && data.cell.section === "body") {
+          // Check if the column is "Passport"
+          const img = tableData[data.row.index].passport; // Get the base64 encoded image string
+          if (img) {
+            const imgWidth = 20; // Adjust the width of the image
+            const imgHeight = 15; // Adjust the height of the image
+            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+            doc.addImage(img, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
+          }
+        }else if (data.column.index === 13 && data.cell.section === "body") {
+          // Check if the column is "Document"
+          const docImg = tableData[data.row.index].updateDocument; // Get the base64 encoded image string
+          if (docImg) {
+            const imgWidth = 20; // Adjust the width of the image
+            const imgHeight = 15; // Adjust the height of the image
+            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+            doc.addImage(docImg, "JPEG", xPos, yPos, imgWidth, imgHeight);
+            data.cell.text = ""; // Clear the text content to prevent it from being drawn
+          }
+        }
+      },
+      styles: {
+        cellPadding: 1, // Adjust cell padding for additional space around text
+        rowHeight: 20,  // Adjust row height if needed
+        overflow: 'linebreak', 
+        textAlign: 'center', // Center text horizontally
+        valign: 'middle', // Ensure text does not overflow
+      },
+      margin: { top: 10 },
     });
-
+  
     doc.save("updateName.pdf");
   };
 
@@ -248,6 +294,7 @@ const UpdateName = () => {
               <TableCell>Clearing House</TableCell>
               <TableCell>Brief Details</TableCell>
               <TableCell>Document</TableCell>
+              <TableCell>Data Policy</TableCell>
               <TableCell>Date Sent</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>

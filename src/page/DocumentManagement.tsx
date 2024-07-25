@@ -126,7 +126,7 @@ const DocumentManagement = () => {
     refetch,
   } = useFetch("/admin/document/management/system");
 
-  console.log(_data);
+
   useEffect(() => {
     setTableData(_data?.data);
   }, [_data]);

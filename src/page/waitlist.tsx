@@ -156,58 +156,68 @@ const WaitlistTable = () => {
     ...row,
     created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
   }));
-  const downloadAsPDF = () => {
+
+
+ const downloadAsPDF = () => {
+  const doc = new jsPDF({ orientation: "landscape" });
   
-    const doc = new jsPDF({ orientation: "landscape" });
-    autoTable(doc, {
-      head: [
-        [
-          "S/N",
-
-          "Full Name",
-          "Email",
-          "Phone Number",
-          "Whatsapp Number",
-          "Firm Name",
-          "Need Company Secretarial Service",
-          "Firm Address",
-          "Brief Details",
-          "Data Policy",
-          "Created At",
-        ],
+  autoTable(doc, {
+    head: [
+      [
+        "S/N",
+        "Passport",
+        "Full Name",
+        "Email",
+        "Phone Number",
+        "WhatsApp Number",
+        "Firm Name",
+        "Need Company Secretarial Service",
+        "Firm Address",
+        "Brief Details",
+        "Data Policy",
+        "Created At",
       ],
-      body: tableData?.map((item, index) => [
-        index + 1,
-        // item.passport, // The base64 encoded image string
-        item.name,
-        item.email,
-        item.phoneNumber,
-        item.whatsappNumber,
-        item.nameFirm,
-        item.needCompanySecretarialService,
-        item.addressFirm,
-        item.serviceBriefDetails,
-        item.acceptDataPrivacyPolicy,
-        dayjs(item.created_at).format("DD-MMM-YYYY"),
-      ]),
-      didDrawCell: (data) => {
-        if (data.column.index === 1 && data.cell.section === "body") {
-          // Check if the column is "Passport"
-          const img = data.cell.raw; // The base64 encoded image string
-          if (img) {
-            const imgWidth = 20; // Adjust the width of the image
-            const imgHeight = 20; // Adjust the height of the image
-            const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
-            const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
-            doc.addImage(img, "JPEG", xPos, yPos, imgWidth, imgHeight);
-            data.cell.text = ""; // Clear the text content to prevent it from being drawn
-          }
+    ],
+    body: tableData?.map((item, index) => [
+      index + 1,
+      "", // Leave this cell empty to be filled with image later
+      item.name,
+      item.email,
+      item.phoneNumber,
+      item.whatsappNumber,
+      item.nameFirm,
+      item.needCompanySecretarialService,
+      item.addressFirm,
+      item.serviceBriefDetails,
+      item.acceptDataPrivacyPolicy,
+      dayjs(item.created_at).format("DD-MMM-YYYY"),
+    ]),
+    didDrawCell: (data) => {
+      if (data.column.index === 1 && data.cell.section === "body") {
+        // Check if the column is "Passport"
+        const img = tableData[data.row.index].passport; // Get the base64 encoded image string
+        if (img) {
+          const imgWidth = 20; // Adjust the width of the image
+          const imgHeight = 15; // Adjust the height of the image
+          const xPos = data.cell.x + (data.cell.width - imgWidth) / 2;
+          const yPos = data.cell.y + (data.cell.height - imgHeight) / 2;
+          doc.addImage(img, "JPEG", xPos, yPos, imgWidth, imgHeight);
+          data.cell.text = ""; // Clear the text content to prevent it from being drawn
         }
-      },
-    });
+      }
+    },
+    styles: {
+      cellPadding: 1, // Adjust cell padding for additional space around text
+      rowHeight: 20,  // Adjust row height if needed
+      overflow: 'linebreak', 
+      textAlign: 'center', // Center text horizontally
+      valign: 'middle', // Ensure text does not overflow
+    },
+    margin: { top: 10 },
+  });
 
-    doc.save("secretarialService.pdf");
-  };
+  doc.save("secretarialService.pdf");
+};
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,

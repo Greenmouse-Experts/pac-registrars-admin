@@ -54,11 +54,11 @@ const Homepage = () => {
   return (
     <>
       <div className="home-bg">
-        <div className="img_con">
+        <div className="img_con bg-white  mx-auto mt-20 px-3 py-1 rounded-md h-16 w-64 ">
           <img
-            src="https://asqyfzgqnbxthtasplew.supabase.co/storage/v1/object/public/cabin-images/logo.svg"
+            src="https://res.cloudinary.com/greenmouse-tech/image/upload/v1721899630/pac_wvpszx.png"
             alt="logo"
-            className="logo_img"
+            className="logo_img w-full"
           />
         </div>
         <div>
