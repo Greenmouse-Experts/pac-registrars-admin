@@ -154,7 +154,9 @@ const SurvivorList = () => {
   }));
   // pdf download
   const downloadAsPDF = () => {
-    const doc = new jsPDF('l', 'pt', [1312, 892]);;
+    const doc = new jsPDF('l', 'pt', [1312, 892]);
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
       head: [
         [
