@@ -158,6 +158,7 @@ const UpdateSignature = () => {
   // pdf download
   const downloadAsPDF = () => {
     const doc = new jsPDF({ orientation: "landscape" });
+    const fontSize = 5;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
       head: [
@@ -238,6 +239,7 @@ const UpdateSignature = () => {
         overflow: 'linebreak', 
         textAlign: 'center', // Center text horizontally
         valign: 'middle', // Ensure text does not overflow
+        fontSize: fontSize,
       },
       margin: { top: 10 },
     });

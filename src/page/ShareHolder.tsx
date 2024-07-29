@@ -157,20 +157,61 @@ const ShareHolderUpdate = () => {
   // pdf download
   const downloadAsPDF = () => {
     const doc = new jsPDF({ orientation: "landscape" });
+  
+    // Set the font size for the table
+    const fontSize = 5;
+  
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
-      head: [["S/N", "Full Name", "Email", "Suggestions", "Date Joined"]],
+      head: [
+        [
+          "S/N",
+          "First Name",
+          "Middle Name",
+          "Last Name",
+          "Email",
+          "Phone Number",
+          "BVN",
+          "NIN",
+          "Gender",
+          "Clearing",
+          "Clearing House",
+          "Kin First Name",
+          "Kin Last Name",
+          "Relationship with Kin",
+          "Kin Phone Number",
+          "Kin Email",
+          "Data Policy",
+          "Date Sent",
+        ],
+      ],
       body: tableData?.map((item, index) => [
         index + 1,
-        item.name,
+        item.firstName,
+        item.middleName,
+        item.lastName,
         item.email,
-        item.suggestions,
-        dayjs(item.created_at).format("DD-MMM -YYYY"),
+        item.phoneNumber,
+        item.bvn,
+        item.nin,
+        item.gender,
+        item.clearingHouseNumber,
+        item.kinFirstName,
+        item.kinLastName,
+        item.kinRelationship,
+        item.kinPhoneNumber,
+        item.kinEmail,
+        item.acceptDataPrivacyPolicy,
+        dayjs(item.created_at).format("DD-MMM-YYYY"),
       ]),
+      styles: {
+        fontSize: fontSize,
+      },
     });
-
+  
     doc.save("shareholder.pdf");
   };
+  
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,

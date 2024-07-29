@@ -185,6 +185,9 @@ const ProbateService = () => {
 
         dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
+      styles: {
+        fontSize: 5,
+      },
     });
 
     doc.save("probate.pdf");

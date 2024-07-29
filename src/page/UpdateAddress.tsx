@@ -159,14 +159,22 @@ const UpdateAddress = () => {
     const doc = new jsPDF({ orientation: "landscape" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
-      head: [["S/N", "Full Name", "Email", "Suggestions", "Date Joined"]],
+      head: [["S/N", "First Name", "Middle Name", "Last Name", "Email", "Phone Number", "Old Address", "New Address", "Data Policy", "Date Sent"]],
       body: tableData?.map((item, index) => [
         index + 1,
-        item.name,
+        item.firstName,
+        item.middleName,
+        item.lastName,
         item.email,
-        item.suggestions,
+        item.phoneNumber,
+        item.oldAddress,
+        item.newAddress,
+        item.acceptDataPrivacyPolicy,
         dayjs(item.created_at).format("DD-MMM -YYYY"),
       ]),
+      styles: {
+        fontSize: 5,
+      },
     });
 
     doc.save("updateAddress.pdf");

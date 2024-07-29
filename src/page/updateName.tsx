@@ -239,6 +239,7 @@ const UpdateName = () => {
         overflow: 'linebreak', 
         textAlign: 'center', // Center text horizontally
         valign: 'middle', // Ensure text does not overflow
+        fontSize:5,
       },
       margin: { top: 10 },
     });

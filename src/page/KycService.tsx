@@ -19,8 +19,8 @@ import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-// import { CSVLink } from "react-csv";
-// import jsPDF from "jspdf";
+import { CSVLink } from "react-csv";
+import jsPDF from "jspdf";
 import "jspdf-autotable";
 // import logo from '../assets/9159105.png'
 import { ToastContainer, toast } from "react-toastify";
@@ -154,32 +154,41 @@ const KycService = () => {
   };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-    const data = tableData?.map(row => ({...row, created_at: dayjs(row.created_at).format("DD/MMM/YYYY")}))
+  const data = tableData?.map((row) => ({
+    ...row,
+    created_at: dayjs(row.created_at).format("DD/MMM/YYYY"),
+  }));
 
-    const downloadAsPDF = () => {
-      const doc = new jsPDF({ orientation: "landscape" });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (doc as any).autoTable({
-        head: [
-          [
-            "S/N",
-            "Full Name",
-            "Email",
-            "Suggestions",
-            "Date Joined",
-          ],
+  const downloadAsPDF = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (doc as any).autoTable({
+      head: [
+        [
+          "S/N",
+          "Full Name",
+          "Email",
+          "Phone Number",
+          "Organization Name",
+          "Service",
+          "Date Sent",
         ],
-        body: tableData?.map((item, index) => [
-            index + 1,
-            item.name,
-            item.email,
-            item.suggestions,
-            dayjs(item.created_at).format("DD-MMM -YYYY"),
-          ]),
-      });
-
-      doc.save("kycService.pdf");
-    };
+      ],
+      body: tableData?.map((item, index) => [
+        index + 1,
+        item.name,
+        item.email,
+        item.phoneNumber,
+        item.nameOrganization,
+        item.kycService,
+        dayjs(item.created_at).format("DD-MMM -YYYY"),
+      ]),
+      styles: {
+        fontSize: 8,
+      },
+    });
+    doc.save("kycService.pdf");
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
