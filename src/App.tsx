@@ -6,7 +6,7 @@ import Login from './page/Login'
 function App() {
   return (
     <>
-    <BrowserRouter>
+    <BrowserRouter basename="/admin-portal">
     <Routes>
       <Route path="/" index element={<Login />} />
       <Route path="/admin" element={   <Homepage/>} />
